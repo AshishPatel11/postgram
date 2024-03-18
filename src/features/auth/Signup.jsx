@@ -1,28 +1,37 @@
 import { useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAddUserMutation } from '../api/apiSlice';
+import { toast } from 'react-toastify';
 
 function Signup() {
   const form = useRef();
   const [error, setError] = useState({});
-  const [addUser, result] = useAddUserMutation();
+  const [addUser] = useAddUserMutation();
+  const navigate = useNavigate();
+
   //form submit event handler
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    //getting formData
     const formData = new FormData(form.current);
     const userData = Object.fromEntries(formData.entries());
+
+    //password matching
     if (userData.password !== userData.confirmPassword) {
       setError({ password: 'Password does not match!' });
       return;
     } else {
-      try {
-        //apicall
-        await addUser({ ...userData, isPrivate: true }).unwrap();
-        console.log(result);
-      } catch {
-        //
-        console.log('catch', result);
-      }
+      //API call through RTK query
+      await addUser({ ...userData, isPrivate: true })
+        .unwrap()
+        .then((payload) => {
+          toast.success(payload.message);
+          navigate('/');
+        })
+        .catch((error) => {
+          setError({ auth: error?.data.message });
+        });
     }
   };
 
@@ -34,9 +43,16 @@ function Signup() {
             <h1 className="text-2xl xl:text-4xl font-extrabold text-blue-900">
               Sign Up
             </h1>
+            <p className="text-center mt-3 text-sm text-red-500 h-1">
+              {error?.auth ? error.auth : ''}
+            </p>
           </div>
           <div className="w-full flex-1 mt-8">
-            <form onSubmit={handleSubmit} ref={form}>
+            <form
+              onSubmit={handleSubmit}
+              ref={form}
+              onChange={() => setError('')}
+            >
               <div className="mx-auto max-w-xs flex flex-col gap-4">
                 <div className="flex gap-3">
                   <div>
