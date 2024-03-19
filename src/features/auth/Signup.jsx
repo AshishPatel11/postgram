@@ -2,13 +2,13 @@ import { useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAddUserMutation } from '../api/apiSlice';
 import { toast } from 'react-toastify';
+import validation from '../../services/validation';
 
 function Signup() {
   const form = useRef();
-  const [error, setError] = useState({});
-  const [addUser] = useAddUserMutation();
+  const [error, setError] = useState(null);
+  const [addUser, { isLoading }] = useAddUserMutation();
   const navigate = useNavigate();
-
   //form submit event handler
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,9 +17,13 @@ function Signup() {
     const formData = new FormData(form.current);
     const userData = Object.fromEntries(formData.entries());
 
-    //password matching
+    if (validation(userData, setError)) {
+      return;
+    }
+
     if (userData.password !== userData.confirmPassword) {
-      setError({ password: 'Password does not match!' });
+      //password matching
+      setError({ match: 'Password does not match!' });
       return;
     } else {
       //API call through RTK query
@@ -37,86 +41,101 @@ function Signup() {
 
   return (
     <>
-      <div className="lg:w-1/2 xl:w-1/2 p-6 sm:p-12 flex items-center justify-center">
+      <div className="lg:w-1/2 xl:w-1/2 p-6 sm:p-12 flex items-center justify-center relative">
         <div className=" flex flex-col items-center">
           <div className="text-center">
             <h1 className="text-2xl xl:text-4xl font-extrabold text-blue-900">
               Sign Up
             </h1>
-            <p className="text-center mt-3 text-sm text-red-500 h-1">
-              {error?.auth ? error.auth : ''}
-            </p>
           </div>
           <div className="w-full flex-1 mt-8">
             <form
               onSubmit={handleSubmit}
               ref={form}
-              onChange={() => setError('')}
+              onChange={() => setError(null)}
             >
               <div className="mx-auto max-w-xs flex flex-col gap-4">
                 <div className="flex gap-3">
                   <div>
                     <input
-                      className="w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+                      className={`w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white
+                      ${error?.firstname ? 'border-red-500 text-red-500' : ''}`}
                       type="text"
                       name="firstname"
-                      required
                       placeholder="First name"
                     />
+                    <small className="text-red-500 m-0 h-3 ml-1 block">
+                      {error?.firstname}
+                    </small>
                   </div>
                   <div>
                     <input
-                      className="w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+                      className={`w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white
+                      ${error?.lastname ? 'border-red-500 text-red-500' : ''}`}
                       type="text"
                       name="lastname"
-                      required
                       placeholder="Last name"
                     />
+                    <small className="text-red-500 m-0 h-3 ml-1 block">
+                      {error?.lastname}
+                    </small>
                   </div>
-                </div>
-                <div>
-                  <input
-                    className="w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
-                    type="text"
-                    name="username"
-                    required
-                    placeholder="Username"
-                  />
-                </div>
-                <div>
-                  <input
-                    className="w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
-                    type="email"
-                    name="email"
-                    required
-                    placeholder="Email"
-                  />
-                </div>
-                <div>
-                  <input
-                    className="w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
-                    type="password"
-                    name="password"
-                    required
-                    placeholder="Password"
-                  />
                 </div>
                 <div>
                   <input
                     className={`w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white
-                  ${error?.password ? 'border-red-500 text-red-500' : ''}`}
-                    type="password"
-                    name="confirmPassword"
-                    required
-                    placeholder="Confirm Password"
+                    ${error?.username ? 'border-red-500 text-red-500' : ''}`}
+                    type="text"
+                    name="username"
+                    placeholder="Username"
                   />
-                  <small className="text-red-500 m-0 h-5 block">
+                  <small className="text-red-500 m-0 h-3 ml-1 block">
+                    {error?.username}
+                  </small>
+                </div>
+                <div>
+                  <input
+                    className={`w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white
+                    ${error?.email ? 'border-red-500 text-red-500' : ''}`}
+                    type="text"
+                    name="email"
+                    placeholder="Email"
+                  />
+                  <small className="text-red-500 m-0 h-3 ml-1 block">
+                    {error?.email}
+                  </small>
+                </div>
+                <div>
+                  <input
+                    className={`w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white
+                    ${error?.password ? 'border-red-500 text-red-500' : ''}`}
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                  />
+                  <small className="text-red-500 m-0 h-3 ml-1 block">
                     {error?.password}
                   </small>
                 </div>
+                <div>
+                  <input
+                    className={`w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white
+                  ${error?.confirmPassword || error?.match ? 'border-red-500 text-red-500' : ''}`}
+                    type="password"
+                    name="confirmPassword"
+                    placeholder="Confirm Password"
+                  />
+                  <small className="text-red-500 m-0 h-3 ml-1 block">
+                    {error?.confirmPassword || error?.match}
+                  </small>
+                </div>
+                <p className="text-center mt-3 text-sm text-red-500 h-1">
+                  {error?.auth ? error.auth : ''}
+                </p>
                 <button
-                  className="mt-5 tracking-wide font-semibold bg-blue-900 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
+                  className="mt-5 tracking-wide font-semibold bg-blue-900 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none disabled:bg-slate-400 cursor-pointer disabled:cursor-not-allowed"
                   type="submit"
+                  disabled={isLoading ? true : false}
                 >
                   <svg
                     className="w-6 h-6 -ml-2"
@@ -131,6 +150,9 @@ function Signup() {
                     <path d="M20 8v6M23 11h-6" />
                   </svg>
                   <span className="ml-3">Sign Up</span>
+                  {isLoading && (
+                    <div className="animate-spin ease-linear rounded-full size-6 border-t-2 border-b-2 border-white ml-3"></div>
+                  )}
                 </button>
               </div>
             </form>

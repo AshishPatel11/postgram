@@ -1,34 +1,50 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { userContext } from './context';
+import { useGetUserQuery } from '../features/api/apiSlice';
+import Loader from '../components/Loader';
 import { deleteCookies, getCookie } from '../services/cookies';
-import { useLazyGetUserQuery } from '../features/api/apiSlice';
 import { toast } from 'react-toastify';
+import { redirect } from 'react-router-dom';
 
 function UserContextProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [getUser, { data, isError, error }] = useLazyGetUserQuery();
+  const [skip, setSkip] = useState(true);
+  // const navigate = useNavigate();
+  const result = useGetUserQuery(null, {
+    skip,
+  });
+
+  const addUser = useCallback((user) => {
+    setUser(user);
+  }, []);
+
+  const removeUser = useCallback(() => {
+    setUser(null);
+    deleteCookies('token');
+  }, []);
 
   useEffect(() => {
     const token = getCookie('token');
+    //it will call the getUser api
     if (token) {
-      getUser();
+      addUser({});
+      setSkip(false);
     }
-  }, [getUser]);
 
-  useEffect(() => {
-    if (data) setUser(data.data);
-  }, [data]);
-
-  useEffect(() => {
-    if (isError) {
-      deleteCookies('token');
-      toast.error(error.data.message);
+    if (result.isSuccess) {
+      addUser(result.data.data);
     }
-  }, [isError, error]);
+    if (result.isError) {
+      toast.error(result.error?.data.message);
+      console.log('object');
+      removeUser();
+      redirect('/');
+    }
+  }, [result, addUser, removeUser]);
 
   return (
-    <userContext.Provider value={[user, setUser]}>
-      {children}
+    <userContext.Provider value={{ user, addUser, removeUser }}>
+      {result.isLoading ? <Loader /> : children}
     </userContext.Provider>
   );
 }

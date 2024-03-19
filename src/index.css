@@ -1,3 +1,15 @@
+@import url(https://fonts.googleapis.com/css?family=Rochester:regular);
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.backdrop-box {
+    box-shadow: inset rgba(60, 70, 85, 0.5) 0px 0px 40px 0px, rgba(0, 0, 0, .3) 0px 30px 100px -24px;
+    backdrop-filter: blur(1px);
+}
+
+.postgram {
+    font-family: "Rochester", cursive;
+    font-weight: 400;
+    font-style: normal;
+}
