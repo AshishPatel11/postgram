@@ -48,7 +48,11 @@ function Signin() {
             </h1>
           </div>
           <div className="w-full flex-1 mt-8">
-            <form ref={form} onSubmit={handleSubmit}>
+            <form
+              ref={form}
+              onSubmit={handleSubmit}
+              onChange={() => setError(null)}
+            >
               <div className="mx-auto max-w-xs flex flex-col gap-4">
                 <div>
                   <input

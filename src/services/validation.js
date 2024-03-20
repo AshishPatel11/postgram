@@ -1,6 +1,14 @@
 export default function validation(formData, setError) {
     for (const key in formData) {
-        if (formData[key].trim().length <= 0) {
+        if (key === "image") {
+            if (!formData[key].name) {
+                setError({
+                    [key]: `Please select the file!`
+                })
+                return true
+            }
+        }
+        if (key != "image" && formData[key].trim().length <= 0) {
             setError({
                 [key]: `Can't be empty!`,
             });

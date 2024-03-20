@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { getCookie } from '../../services/cookies'
+import { readImage } from '../../services/readImage'
 
 export const apiSlice = createApi({
     reducerPath: 'api',
@@ -37,8 +38,38 @@ export const apiSlice = createApi({
                 url: "/users/get-user",
                 method: "GET"
             })
+        }),
+        getFeedPosts: builder.query({
+            query: page => ({
+                url: `/posts/get-feed-posts?page=${parseInt(page)}`,
+                method: "GET"
+            }),
+            providesTags: ['posts']
+        }),
+        getUserData: builder.query({
+            query: userId => ({
+                url: `users/get-users-profile?userId=${userId}`,
+                method: "GET"
+            }),
+        }),
+        getPostImage: builder.query({
+            query: postId => ({
+                url: `/posts/get-feed-image?postId=${postId}`,
+                method: "GET",
+                responseHandler: (response) => response.blob()
+            }),
+            transformResponse: async (response) => {
+                return await readImage(response);
+            }
         })
     })
 })
 
-export const { useAddUserMutation, useLazyLoginUserQuery, useGetUserQuery } = apiSlice
+export const {
+    useAddUserMutation,
+    useLazyLoginUserQuery,
+    useGetUserQuery,
+    useGetFeedPostsQuery,
+    useGetUserDataQuery,
+    useGetPostImageQuery
+} = apiSlice

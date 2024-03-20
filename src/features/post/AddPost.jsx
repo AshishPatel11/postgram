@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { readImage } from '../../services/readImage';
+import validation from '../../services/validation';
 function AddPost({ toggle }) {
   const form = useRef();
   const [error, setError] = useState(null);
@@ -10,7 +11,13 @@ function AddPost({ toggle }) {
     setImage(imageString);
   };
   const handleSubmit = (e) => {
-    //
+    e.preventDefault();
+    const formData = new FormData(form.current);
+    const postData = Object.fromEntries(formData.entries());
+    console.log(postData);
+    if (validation(postData, setError)) {
+      return;
+    }
   };
 
   const hideForm = (e) => {
@@ -48,8 +55,12 @@ function AddPost({ toggle }) {
             </svg>
           </div>
           {/* Add post form ==> */}
-          <div className="w-full flex-1 mt-8 p-14">
-            <form ref={form} onSubmit={handleSubmit}>
+          <div className="w-full flex-1 p-14">
+            <form
+              ref={form}
+              onSubmit={handleSubmit}
+              onChange={() => setError(null)}
+            >
               <div className="mx-auto max-w-sm flex flex-col gap-4">
                 <div>
                   <div className="flex items-center justify-center w-full">
@@ -128,37 +139,41 @@ function AddPost({ toggle }) {
                       onChange={fileChange}
                     />
                   </div>
+                  <small className="text-red-500 m-0 h-3 ml-1 block">
+                    {error?.image}
+                  </small>
                 </div>
+
                 <div>
                   <input
                     className={`w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white
-                  ${error?.email ? 'border-red-500 text-red-500' : ''}`}
+                  ${error?.title ? 'border-red-500 text-red-500' : ''}`}
                     type="text"
                     name="title"
                     placeholder="Title"
                   />
                   <small className="text-red-500 m-0 h-3 ml-1 block">
-                    {error?.email}
+                    {error?.title}
                   </small>
                 </div>
                 <div>
                   <textarea
                     className={`w-full resize-none px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white
-                    ${error?.password ? 'border-red-500 text-red-500' : ''}`}
+                    ${error?.description ? 'border-red-500 text-red-500' : ''}`}
                     name="description"
                     placeholder="Description"
                     rows={6}
                   ></textarea>
                   <small className="text-red-500 m-0 h-3 ml-1 block">
-                    {error?.password}
+                    {error?.description}
                   </small>
                 </div>
 
-                <p className="text-center mt-3 text-sm text-red-500 h-1">
+                <p className="text-center mt-2 text-sm text-red-500 h-1">
                   {error?.auth ? error.auth : ''}
                 </p>
                 <button
-                  className="mt-5 tracking-wide font-semibold bg-blue-900 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none disabled:bg-slate-400 cursor-pointer disabled:cursor-not-allowed"
+                  className="tracking-wide font-semibold bg-blue-900 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none disabled:bg-slate-400 cursor-pointer disabled:cursor-not-allowed"
                   type="submit"
                   disabled={isLoading ? true : false}
                 >

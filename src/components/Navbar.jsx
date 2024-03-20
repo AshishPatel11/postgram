@@ -5,8 +5,8 @@ function Navbar() {
   const [toggleForm, setToggleForm] = useState(false);
   return (
     <>
-      <div className="h-16 sticky  my-5 top-0  flex items-center z-10">
-        <nav className="flex items-center justify-between text-blue-900 container m-auto bg-white p-3 rounded-3xl">
+      <div className="h-16 sticky  my-5 top-0  flex items-center z-10 mb-12">
+        <nav className="flex items-center justify-between text-blue-900 container m-auto bg-white p-3 rounded-3xl shadow-2xl">
           <h1 className="postgram text-5xl">Postgram</h1>
           <div className="flex justify-between">
             <button
