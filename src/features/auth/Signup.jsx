@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAddUserMutation } from '../api/apiSlice';
 import { toast } from 'react-toastify';
 import validation from '../../services/validation';
+import Button from '../../components/Button';
+import Input from '../../components/Input';
 
 function Signup() {
   const form = useRef();
@@ -41,13 +43,14 @@ function Signup() {
 
   return (
     <>
-      <div className="lg:w-1/2 xl:w-1/2 p-6 sm:p-12 flex items-center justify-center relative">
+      <div className="lg:w-1/2 xl:w-1/2 p-6 sm:p-12 h-full flex items-center justify-center relative">
         <div className=" flex flex-col items-center">
           <div className="text-center">
             <h1 className="text-2xl xl:text-4xl font-extrabold text-blue-900">
               Sign Up
             </h1>
           </div>
+
           <div className="w-full flex-1 mt-8">
             <form
               onSubmit={handleSubmit}
@@ -57,86 +60,58 @@ function Signup() {
               <div className="mx-auto max-w-xs flex flex-col gap-4">
                 <div className="flex gap-3">
                   <div>
-                    <input
-                      className={`w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white
-                      ${error?.firstname ? 'border-red-500 text-red-500' : ''}`}
-                      type="text"
-                      name="firstname"
-                      placeholder="First name"
+                    <Input
+                      type={'text'}
+                      error={error?.firstname}
+                      name={'firstname'}
+                      placeholder={'First name'}
                     />
-                    <small className="text-red-500 m-0 h-3 ml-1 block">
-                      {error?.firstname}
-                    </small>
                   </div>
                   <div>
-                    <input
-                      className={`w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white
-                      ${error?.lastname ? 'border-red-500 text-red-500' : ''}`}
-                      type="text"
-                      name="lastname"
-                      placeholder="Last name"
+                    <Input
+                      type={'text'}
+                      error={error?.lastname}
+                      name={'lastname'}
+                      placeholder={'Last name'}
                     />
-                    <small className="text-red-500 m-0 h-3 ml-1 block">
-                      {error?.lastname}
-                    </small>
                   </div>
                 </div>
                 <div>
-                  <input
-                    className={`w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white
-                    ${error?.username ? 'border-red-500 text-red-500' : ''}`}
-                    type="text"
-                    name="username"
-                    placeholder="Username"
+                  <Input
+                    type={'text'}
+                    error={error?.username}
+                    name={'username'}
+                    placeholder={'Username'}
                   />
-                  <small className="text-red-500 m-0 h-3 ml-1 block">
-                    {error?.username}
-                  </small>
                 </div>
                 <div>
-                  <input
-                    className={`w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white
-                    ${error?.email ? 'border-red-500 text-red-500' : ''}`}
-                    type="text"
-                    name="email"
-                    placeholder="Email"
+                  <Input
+                    type={'text'}
+                    error={error?.email}
+                    name={'email'}
+                    placeholder={'Email'}
                   />
-                  <small className="text-red-500 m-0 h-3 ml-1 block">
-                    {error?.email}
-                  </small>
                 </div>
                 <div>
-                  <input
-                    className={`w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white
-                    ${error?.password ? 'border-red-500 text-red-500' : ''}`}
-                    type="password"
-                    name="password"
-                    placeholder="Password"
+                  <Input
+                    type={'password'}
+                    error={error?.password}
+                    name={'password'}
+                    placeholder={'Password'}
                   />
-                  <small className="text-red-500 m-0 h-3 ml-1 block">
-                    {error?.password}
-                  </small>
                 </div>
                 <div>
-                  <input
-                    className={`w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white
-                  ${error?.confirmPassword || error?.match ? 'border-red-500 text-red-500' : ''}`}
-                    type="password"
-                    name="confirmPassword"
-                    placeholder="Confirm Password"
+                  <Input
+                    type={'password'}
+                    error={error?.confirmPassword || error?.match}
+                    name={'confirmPassword'}
+                    placeholder={'Confirm Password'}
                   />
-                  <small className="text-red-500 m-0 h-3 ml-1 block">
-                    {error?.confirmPassword || error?.match}
-                  </small>
                 </div>
                 <p className="text-center mt-3 text-sm text-red-500 h-1">
                   {error?.auth ? error.auth : ''}
                 </p>
-                <button
-                  className="mt-5 tracking-wide font-semibold bg-blue-900 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none disabled:bg-slate-400 cursor-pointer disabled:cursor-not-allowed"
-                  type="submit"
-                  disabled={isLoading ? true : false}
-                >
+                <Button type={'submit'} isLoading={isLoading}>
                   <svg
                     className="w-6 h-6 -ml-2"
                     fill="none"
@@ -150,10 +125,7 @@ function Signup() {
                     <path d="M20 8v6M23 11h-6" />
                   </svg>
                   <span className="ml-3">Sign Up</span>
-                  {isLoading && (
-                    <div className="animate-spin ease-linear rounded-full size-6 border-t-2 border-b-2 border-white ml-3"></div>
-                  )}
-                </button>
+                </Button>
               </div>
             </form>
             <p className="mt-6 text-sm text-gray-600 text-center">

@@ -9,6 +9,7 @@ import Signup from '../features/auth/Signup';
 import RequiredAuth from '../features/post/RequiredAuth';
 import Home from '../features/post/Home';
 import NotFound from '../components/NotFound';
+import Layout from '../components/Layout';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -21,7 +22,9 @@ const router = createBrowserRouter(
 
       {/* Protected routes */}
       <Route element={<RequiredAuth />}>
-        <Route path="/home" element={<Home />} />
+        <Route path="/" element={<Layout />}>
+          <Route path="/home" element={<Home />} />
+        </Route>
       </Route>
 
       <Route path="/*" element={<NotFound />} />

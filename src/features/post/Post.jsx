@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import ImageModal from '../../components/ImageModal';
 import { useGetPostImageQuery, useGetUserDataQuery } from '../api/apiSlice';
-function Post({ title, description, userId, postId, createdAt }) {
+function Post({ post }) {
+  // console.log(dateDiff(createdAt));
+  const { title, description, userId, _id: postId, createdAt } = post;
   const { data: user, isLoading } = useGetUserDataQuery(userId);
   const { data: image, isImageLoading } = useGetPostImageQuery(postId);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isModalOpen, setModalOpen] = useState(false);
   if (isLoading || isImageLoading) {
     return (
       <>
@@ -75,9 +77,11 @@ function Post({ title, description, userId, postId, createdAt }) {
               src={image}
               className="rounded-lg size-full cursor-pointer"
               alt=""
-              onClick={() => setIsOpen(true)}
+              onClick={() => setModalOpen(true)}
             />
-            {isOpen && <ImageModal src={image} toggle={setIsOpen} />}
+            {isModalOpen && (
+              <ImageModal src={image} toggleModal={setModalOpen} />
+            )}
           </div>
           <p className="">{description}</p>
         </div>

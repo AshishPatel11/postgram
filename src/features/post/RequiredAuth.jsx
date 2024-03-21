@@ -3,6 +3,7 @@ import { useUser } from '../../context/context';
 
 function RequiredAuth() {
   const { user } = useUser();
+  console.log(user);
   return user ? <Outlet /> : <Navigate to="/" replace />;
 }
 

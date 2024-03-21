@@ -4,13 +4,14 @@ import { useUser } from '../../context/context';
 
 function AuthLayout() {
   const { user } = useUser();
+  console.log(user);
   if (user) {
     return <Navigate to="/home" replace />;
   } else {
     return (
       <>
         <div className="h-[100vh] items-center flex justify-center px-5 lg:px-0">
-          <div className="max-w-screen-xl bg-white border shadow sm:rounded-lg flex justify-center flex-1">
+          <div className="max-w-screen-xl h-3/4 bg-white border shadow sm:rounded-lg flex justify-center flex-1">
             <div className="flex-1 bg-blue-900 text-center hidden md:flex">
               <div className="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat">
                 <img className="h-full" src={social} alt="" />

@@ -2,7 +2,9 @@ import { useRef, useState } from 'react';
 import { readImage } from '../../services/readImage';
 import validation from '../../services/validation';
 import { useCreatePostMutation } from '../api/apiSlice';
-function AddPost({ toggle }) {
+import Button from '../../components/Button';
+import Input from '../../components/Input';
+function AddPost({ toggleForm }) {
   const form = useRef();
   const [error, setError] = useState(null);
   const [image, setImage] = useState(null);
@@ -23,14 +25,14 @@ function AddPost({ toggle }) {
       return;
     } else {
       await createPost(formData);
-      toggle(false);
+      toggleForm(false);
     }
   };
 
   //for hiding the form
   const hideForm = (e) => {
     if (e.target.id === 'postForm') {
-      toggle(false);
+      toggleForm(false);
       return;
     }
   };
@@ -56,7 +58,7 @@ function AddPost({ toggle }) {
               strokeLinecap="round"
               strokeLinejoin="round"
               className="cursor-pointer rounded-full"
-              onClick={() => toggle(false)}
+              onClick={() => toggleForm(false)}
             >
               <circle cx="12" cy="12" r="10" />
               <path d="m15 9-6 6" />
@@ -154,16 +156,12 @@ function AddPost({ toggle }) {
                 </div>
 
                 <div>
-                  <input
-                    className={`w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white
-                  ${error?.title ? 'border-red-500 text-red-500' : ''}`}
-                    type="text"
-                    name="title"
-                    placeholder="Title"
+                  <Input
+                    type={'text'}
+                    name={'title'}
+                    error={error?.title}
+                    placeholder={'Title'}
                   />
-                  <small className="text-red-500 m-0 h-3 ml-1 block">
-                    {error?.title}
-                  </small>
                 </div>
                 <div>
                   <textarea
@@ -181,11 +179,7 @@ function AddPost({ toggle }) {
                 <p className="text-center mt-2 text-sm text-red-500 h-1">
                   {error?.auth ? error.auth : ''}
                 </p>
-                <button
-                  className="tracking-wide font-semibold bg-blue-900 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none disabled:bg-slate-400 cursor-pointer disabled:cursor-not-allowed"
-                  type="submit"
-                  disabled={isLoading ? true : false}
-                >
+                <Button type={'submit'} isLoading={isLoading}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -197,15 +191,12 @@ function AddPost({ toggle }) {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   >
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                    <circle cx="9" cy="7" r="4" />
-                    <polyline points="16 11 18 13 22 9" />
+                    <rect width="18" height="18" x="3" y="3" rx="2" />
+                    <path d="M8 12h8" />
+                    <path d="M12 8v8" />
                   </svg>
-                  <span className="ml-3">Sign In</span>
-                  {isLoading && (
-                    <div className="animate-spin ease-linear rounded-full size-6 border-t-2 border-b-2 border-white ml-3"></div>
-                  )}
-                </button>
+                  <span className="ml-3">Create Post</span>
+                </Button>
               </div>
             </form>
           </div>

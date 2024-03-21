@@ -1,6 +1,7 @@
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
-const Pagination = ({ pages, currentPage, setPage }) => {
+const Pagination = ({ pages, currentPage }) => {
+  const [, setPage] = useSearchParams();
   //if the page is 1 or less than one do not show pagination
   if (pages <= 1) {
     return;

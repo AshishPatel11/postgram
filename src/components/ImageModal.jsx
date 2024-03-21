@@ -1,7 +1,7 @@
-function ImageModal({ src, toggle }) {
+function ImageModal({ src, toggleModal }) {
   const hideModal = (e) => {
     if (e.target.id === 'imageModal') {
-      toggle(false);
+      toggleModal(false);
       return;
     }
   };

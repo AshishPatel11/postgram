@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { userContext } from './context';
 import { useGetUserQuery } from '../features/api/apiSlice';
 import Loader from '../components/Loader';
-import { deleteCookies, getCookie } from '../services/cookies';
+import { deleteCookies, getCookie, setCookie } from '../services/cookies';
 import { toast } from 'react-toastify';
 import { redirect } from 'react-router-dom';
 
@@ -15,6 +15,8 @@ function UserContextProvider({ children }) {
 
   //add user method
   const addUser = useCallback((user) => {
+    console.log(user);
+    setCookie('token', user.accessToken, 3);
     setUser(user);
   }, []);
 
@@ -28,23 +30,26 @@ function UserContextProvider({ children }) {
     const token = getCookie('token');
     //it will call the getUser api
     if (token) {
-      addUser({});
+      setUser({});
       setSkip(false);
     }
 
     if (result.isSuccess) {
-      addUser(result.data.data);
+      setUser(result.data.data);
     }
     if (result.isError) {
       toast.error(result.error?.data.message);
-      console.log('object');
       removeUser();
       redirect('/');
     }
   }, [result, addUser, removeUser]);
 
+  const isValidToken = (token) => {
+    return token;
+  };
+
   return (
-    <userContext.Provider value={{ user, addUser, removeUser }}>
+    <userContext.Provider value={{ user, addUser, removeUser, isValidToken }}>
       {result.isLoading ? <Loader /> : children}
     </userContext.Provider>
   );

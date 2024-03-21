@@ -1,15 +1,14 @@
 import { useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useLazyLoginUserQuery } from '../api/apiSlice';
-import { setCookie } from '../../services/cookies';
 import { toast } from 'react-toastify';
 import { useUser } from '../../context/context';
 import validation from '../../services/validation';
-
+import Button from '../../components/Button';
+import Input from '../../components/Input';
 function Signin() {
   const form = useRef();
   const [error, setError] = useState({});
-  const navigate = useNavigate();
   const [loginUser, { isLoading }] = useLazyLoginUserQuery();
   const { addUser } = useUser();
 
@@ -28,10 +27,8 @@ function Signin() {
     await loginUser(authData)
       .unwrap()
       .then((result) => {
-        setCookie('token', result.data.accessToken, 3);
         addUser(result.data);
         toast.success('Login Successful');
-        navigate('/home', { replace: true });
       })
       .catch((error) => {
         setError({ auth: error?.data.message });
@@ -55,37 +52,27 @@ function Signin() {
             >
               <div className="mx-auto max-w-xs flex flex-col gap-4">
                 <div>
-                  <input
-                    className={`w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white
-                  ${error?.email ? 'border-red-500 text-red-500' : ''}`}
+                  <Input
                     type="text"
-                    name="email"
                     placeholder="Email"
+                    error={error?.email}
+                    name="email"
                   />
-                  <small className="text-red-500 m-0 h-3 ml-1 block">
-                    {error?.email}
-                  </small>
                 </div>
                 <div>
-                  <input
-                    className={`w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white
-                    ${error?.password ? 'border-red-500 text-red-500' : ''}`}
-                    type="password"
-                    name="password"
-                    placeholder="Password"
+                  <Input
+                    type={'password'}
+                    name={'password'}
+                    placeholder={'Password'}
+                    error={error?.password}
                   />
-                  <small className="text-red-500 m-0 h-3 ml-1 block">
-                    {error?.password}
-                  </small>
                 </div>
+
                 <p className="text-center mt-3 text-sm text-red-500 h-1">
                   {error?.auth ? error.auth : ''}
                 </p>
-                <button
-                  className="mt-5 tracking-wide font-semibold bg-blue-900 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none disabled:bg-slate-400 cursor-pointer disabled:cursor-not-allowed"
-                  type="submit"
-                  disabled={isLoading ? true : false}
-                >
+
+                <Button type="submit" isLoading={isLoading}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -102,10 +89,7 @@ function Signin() {
                     <polyline points="16 11 18 13 22 9" />
                   </svg>
                   <span className="ml-3">Sign In</span>
-                  {isLoading && (
-                    <div className="animate-spin ease-linear rounded-full size-6 border-t-2 border-b-2 border-white ml-3"></div>
-                  )}
-                </button>
+                </Button>
               </div>
             </form>
             <p className="mt-6 text-sm text-gray-600 text-center">
