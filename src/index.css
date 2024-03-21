@@ -13,3 +13,7 @@
     font-weight: 400;
     font-style: normal;
 }
+
+body:has(.open-modal) {
+    overflow: hidden;
+}

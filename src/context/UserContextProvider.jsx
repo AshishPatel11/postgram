@@ -9,15 +9,16 @@ import { redirect } from 'react-router-dom';
 function UserContextProvider({ children }) {
   const [user, setUser] = useState(null);
   const [skip, setSkip] = useState(true);
-  // const navigate = useNavigate();
   const result = useGetUserQuery(null, {
     skip,
   });
 
+  //add user method
   const addUser = useCallback((user) => {
     setUser(user);
   }, []);
 
+  //remove user method
   const removeUser = useCallback(() => {
     setUser(null);
     deleteCookies('token');

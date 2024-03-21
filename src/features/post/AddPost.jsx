@@ -1,31 +1,40 @@
 import { useRef, useState } from 'react';
 import { readImage } from '../../services/readImage';
 import validation from '../../services/validation';
+import { useCreatePostMutation } from '../api/apiSlice';
 function AddPost({ toggle }) {
   const form = useRef();
   const [error, setError] = useState(null);
   const [image, setImage] = useState(null);
-  const isLoading = false;
+  const [createPost, { isLoading }] = useCreatePostMutation();
+  //for displaying current image
   const fileChange = async (e) => {
     const imageString = await readImage(e.target.files[0]);
     setImage(imageString);
   };
-  const handleSubmit = (e) => {
+
+  //form submit handler
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(form.current);
+    formData.append('isPrivate', 'false');
     const postData = Object.fromEntries(formData.entries());
-    console.log(postData);
     if (validation(postData, setError)) {
       return;
+    } else {
+      await createPost(formData);
+      toggle(false);
     }
   };
 
+  //for hiding the form
   const hideForm = (e) => {
     if (e.target.id === 'postForm') {
       toggle(false);
       return;
     }
   };
+
   return (
     <>
       <div
@@ -126,7 +135,7 @@ function AddPost({ toggle }) {
                         </div>
                         <img
                           src={image}
-                          className="absolute w-full h-full rounded-xl object-cover object-top opacity-40"
+                          className="absolute w-full h-full rounded-xl object-contain object-center opacity-40"
                           alt=""
                         />
                       </div>

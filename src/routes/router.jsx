@@ -8,6 +8,7 @@ import Signin from '../features/auth/Signin';
 import Signup from '../features/auth/Signup';
 import RequiredAuth from '../features/post/RequiredAuth';
 import Home from '../features/post/Home';
+import NotFound from '../components/NotFound';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -22,6 +23,8 @@ const router = createBrowserRouter(
       <Route element={<RequiredAuth />}>
         <Route path="/home" element={<Home />} />
       </Route>
+
+      <Route path="/*" element={<NotFound />} />
     </>
   )
 );

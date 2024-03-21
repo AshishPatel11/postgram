@@ -1,13 +1,21 @@
 import { useState } from 'react';
 import AddPost from '../features/post/AddPost';
+import { useUser } from '../context/context';
+import { useNavigate } from 'react-router-dom';
 
 function Navbar() {
   const [toggleForm, setToggleForm] = useState(false);
+  const navigate = useNavigate();
+  const { removeUser } = useUser();
+  const logout = () => {
+    removeUser();
+    navigate('/');
+  };
   return (
     <>
       <div className="h-16 sticky  my-5 top-0  flex items-center z-10 mb-12">
         <nav className="flex items-center justify-between text-blue-900 container m-auto bg-white p-3 rounded-3xl shadow-2xl">
-          <h1 className="postgram text-5xl">Postgram</h1>
+          <h1 className="postgram text-5xl cursor-pointer">Postgram</h1>
           <div className="flex justify-between">
             <button
               className="bg-blue-800 text-white py-1 px-4 rounded-2xl me-6"

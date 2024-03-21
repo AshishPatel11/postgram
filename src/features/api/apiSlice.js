@@ -61,6 +61,14 @@ export const apiSlice = createApi({
             transformResponse: async (response) => {
                 return await readImage(response);
             }
+        }),
+        createPost: builder.mutation({
+            query: postData => ({
+                url: "/posts/create-post",
+                method: "POST",
+                body: postData,
+            }),
+            invalidatesTags: ['posts']
         })
     })
 })
@@ -71,5 +79,6 @@ export const {
     useGetUserQuery,
     useGetFeedPostsQuery,
     useGetUserDataQuery,
-    useGetPostImageQuery
+    useGetPostImageQuery,
+    useCreatePostMutation,
 } = apiSlice
