@@ -3,12 +3,15 @@ import Post from './Post';
 import Loader from '../../components/Loader';
 import Pagination from '../../components/Pagination';
 import { ScrollRestoration, useSearchParams } from 'react-router-dom';
+import NotFound from '../../components/NotFound';
 
 function PostList() {
-  const [params] = useSearchParams();
+  const [params, setParams] = useSearchParams();
   const page = params.get('page');
-  console.log(page);
-  const { data: posts, isLoading, isSuccess } = useGetFeedPostsQuery(page);
+  if (page == 1) {
+    setParams('');
+  }
+  const { data: posts, isLoading, isSuccess } = useGetFeedPostsQuery(page ?? 1);
 
   return (
     <>
@@ -17,7 +20,7 @@ function PostList() {
       {isSuccess && (
         <div>
           <div className="container m-auto">
-            {posts.data.data.length ? (
+            {posts.data.total ? (
               posts.data.data.map((post) => {
                 return <Post key={post._id} post={post} />;
               })
@@ -26,6 +29,8 @@ function PostList() {
                 Posts Not Available!
               </span>
             )}
+
+            {!posts?.data?.data.length && <NotFound />}
             <Pagination
               pages={Math.ceil(posts?.data?.total / 5)}
               currentPage={parseInt(params.get('page') ?? 1)}

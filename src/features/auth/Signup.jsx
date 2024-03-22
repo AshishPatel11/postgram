@@ -11,6 +11,7 @@ function Signup() {
   const [error, setError] = useState(null);
   const [addUser, { isLoading }] = useAddUserMutation();
   const navigate = useNavigate();
+
   //form submit event handler
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,6 +20,7 @@ function Signup() {
     const formData = new FormData(form.current);
     const userData = Object.fromEntries(formData.entries());
 
+    //validating data
     if (validation(userData, setError)) {
       return;
     }
@@ -100,6 +102,7 @@ function Signup() {
                     placeholder={'Password'}
                   />
                 </div>
+
                 <div>
                   <Input
                     type={'password'}
@@ -108,9 +111,11 @@ function Signup() {
                     placeholder={'Confirm Password'}
                   />
                 </div>
+
                 <p className="text-center mt-3 text-sm text-red-500 h-1">
                   {error?.auth ? error.auth : ''}
                 </p>
+
                 <Button type={'submit'} isLoading={isLoading}>
                   <svg
                     className="w-6 h-6 -ml-2"
@@ -128,6 +133,7 @@ function Signup() {
                 </Button>
               </div>
             </form>
+
             <p className="mt-6 text-sm text-gray-600 text-center">
               Already have an account?{' '}
               <Link to="/">

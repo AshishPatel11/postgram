@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 const Pagination = ({ pages, currentPage }) => {
   const [, setPage] = useSearchParams();
   //if the page is 1 or less than one do not show pagination
-  if (pages <= 1) {
+  if (pages <= 1 || currentPage > pages) {
     return;
   }
 

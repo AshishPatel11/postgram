@@ -20,6 +20,7 @@ function Signin() {
     const formData = new FormData(form.current);
     const authData = Object.fromEntries(formData.entries());
 
+    //validating data
     if (validation(authData, setError)) {
       return;
     }
@@ -27,8 +28,8 @@ function Signin() {
     await loginUser(authData)
       .unwrap()
       .then((result) => {
-        addUser(result.data);
         toast.success('Login Successful');
+        addUser(result.data);
       })
       .catch((error) => {
         setError({ auth: error?.data.message });
@@ -59,6 +60,7 @@ function Signin() {
                     name="email"
                   />
                 </div>
+
                 <div>
                   <Input
                     type={'password'}

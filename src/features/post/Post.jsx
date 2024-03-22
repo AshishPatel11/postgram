@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import ImageModal from '../../components/ImageModal';
 import { useGetPostImageQuery, useGetUserDataQuery } from '../api/apiSlice';
+import dateDiff from '../../services/dateDiff';
+
 function Post({ post }) {
-  // console.log(dateDiff(createdAt));
   const { title, description, userId, _id: postId, createdAt } = post;
   const { data: user, isLoading } = useGetUserDataQuery(userId);
   const { data: image, isImageLoading } = useGetPostImageQuery(postId);
   const [isModalOpen, setModalOpen] = useState(false);
+
+  //if loading show skeleton ui
   if (isLoading || isImageLoading) {
     return (
       <>
@@ -67,7 +70,9 @@ function Post({ post }) {
           </svg>
           <div className="flex flex-col items-start">
             <h1 className="text-sm m-0">{user.data.username}</h1>
-            <small className="text-xs text-gray-600">{createdAt}</small>
+            <small className="text-xs text-gray-600">
+              {dateDiff(createdAt)}
+            </small>
           </div>
         </div>
         <div className="mt-4">

@@ -9,6 +9,7 @@ function AddPost({ toggleForm }) {
   const [error, setError] = useState(null);
   const [image, setImage] = useState(null);
   const [createPost, { isLoading }] = useCreatePostMutation();
+
   //for displaying current image
   const fileChange = async (e) => {
     const imageString = await readImage(e.target.files[0]);
@@ -179,6 +180,7 @@ function AddPost({ toggleForm }) {
                 <p className="text-center mt-2 text-sm text-red-500 h-1">
                   {error?.auth ? error.auth : ''}
                 </p>
+
                 <Button type={'submit'} isLoading={isLoading}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
