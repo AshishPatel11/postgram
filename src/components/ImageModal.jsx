@@ -1,4 +1,5 @@
 function ImageModal({ src, toggleModal }) {
+  // hide modal event handler
   const hideModal = (e) => {
     if (e.target.id === 'imageModal') {
       toggleModal(false);

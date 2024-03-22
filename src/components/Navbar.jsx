@@ -1,16 +1,12 @@
 import { useState } from 'react';
 import AddPost from '../features/post/AddPost';
 import { useUser } from '../context/context';
-import { useNavigate } from 'react-router-dom';
-import Button from './Button';
 
 function Navbar() {
   const [toggleForm, setToggleForm] = useState(false);
-  const navigate = useNavigate();
   const { removeUser } = useUser();
   const logout = () => {
     removeUser();
-    navigate('/');
   };
   return (
     <>
