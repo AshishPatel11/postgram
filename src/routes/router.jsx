@@ -10,6 +10,7 @@ import RequiredAuth from '../features/post/RequiredAuth';
 import Home from '../features/post/Home';
 import NotFound from '../components/NotFound';
 import Layout from '../components/Layout';
+import Profile from '../features/auth/Profile';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -24,6 +25,7 @@ const router = createBrowserRouter(
       <Route element={<RequiredAuth />}>
         <Route path="/" element={<Layout />}>
           <Route path="/home" element={<Home />} />
+          <Route path="/profile/:userId" element={<Profile />} />
         </Route>
       </Route>
 

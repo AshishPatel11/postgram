@@ -11,7 +11,8 @@ function PostList() {
   if (page == 1) {
     setParams('');
   }
-  const { data: posts, isLoading, isSuccess } = useGetFeedPostsQuery(page ?? 1);
+  const query = Object.fromEntries(params.entries());
+  const { data: posts, isLoading, isSuccess } = useGetFeedPostsQuery(query);
 
   return (
     <>
@@ -30,7 +31,7 @@ function PostList() {
               </span>
             )}
 
-            {!posts?.data?.data.length && <NotFound />}
+            {!posts?.data?.data.length && posts.data.total ? <NotFound /> : ''}
             <Pagination
               pages={Math.ceil(posts?.data?.total / 5)}
               currentPage={parseInt(params.get('page') ?? 1)}

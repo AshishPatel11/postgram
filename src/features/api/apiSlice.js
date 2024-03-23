@@ -39,10 +39,18 @@ export const apiSlice = createApi({
                 method: "GET"
             })
         }),
+        updateUser: builder.mutation({
+            query: user => ({
+                url: "/users/update-user",
+                method: "PUT",
+                body: user
+            })
+        }),
         getFeedPosts: builder.query({
-            query: page => ({
-                url: `/posts/get-feed-posts?page=${parseInt(page)}`,
-                method: "GET"
+            query: params => ({
+                url: `/posts/get-feed-posts?`,
+                method: "GET",
+                params
             }),
             providesTags: ['posts']
         }),
@@ -81,4 +89,5 @@ export const {
     useGetUserDataQuery,
     useGetPostImageQuery,
     useCreatePostMutation,
+    useUpdateUserMutation
 } = apiSlice

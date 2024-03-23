@@ -17,3 +17,17 @@
 body:has(.open-modal) {
     overflow: hidden;
 }
+
+body::-webkit-scrollbar {
+    width: 12px;
+}
+
+body::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+body::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color: #1E3A8A;
+    outline: 1px solid white;
+}

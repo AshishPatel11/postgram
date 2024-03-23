@@ -8,7 +8,6 @@ import { toast } from 'react-toastify';
 function UserContextProvider({ children }) {
   const [user, setUser] = useState({});
   const [skip, setSkip] = useState(true);
-
   const result = useGetUserQuery(null, {
     skip,
   });
