@@ -2,9 +2,6 @@ export default function dateDiff(date) {
     const today = new Date()
     const createdOn = new Date(date);
 
-    // createdOn.setHours(0, 0, 0, 0);
-    // today.setHours(0, 0, 0, 0)
-    // console.log(+today - +createdOn)
     const milliSeconds = +today - +createdOn
     const seconds = Math.floor(milliSeconds / 1000)
     const minutes = Math.floor(seconds / 60)

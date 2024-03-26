@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import AddPost from '../features/post/AddPost';
 import { useUser } from '../context/context';
 import { toast } from 'react-toastify';
@@ -7,10 +7,12 @@ import { Link, useLocation } from 'react-router-dom';
 function Navbar() {
   const [toggleForm, setToggleForm] = useState(false);
   const { user } = useUser();
-  console.log(user);
+  const menu = useRef();
+  const profileBtn = useRef();
   const [toggleLogout, setToggleLogout] = useState(false);
   const { removeUser } = useUser();
   const location = useLocation();
+
   const logout = () => {
     if (confirm('Are you sure you want to log out!')) {
       toast.success('Logged Out!');
@@ -18,11 +20,20 @@ function Navbar() {
     }
     return;
   };
+
+  window.addEventListener('click', (e) => {
+    if (e.target !== menu.current && e.target !== profileBtn.current) {
+      setToggleLogout(false);
+    }
+  });
+
   return (
     <>
       <div className="h-16 sticky  my-5 top-0  flex items-center z-10 mb-12">
         <nav className="flex items-center justify-between text-blue-900 container m-auto bg-white p-3 rounded-3xl shadow-2xl">
-          <h1 className="postgram text-5xl cursor-pointer">Postgram</h1>
+          <Link to={'home'} className="postgram text-5xl cursor-pointer">
+            Postgram
+          </Link>
           <div className="flex justify-between">
             <button
               className="bg-blue-800 flex items-center justify-center gap-2 text-white py-1 px-4 rounded-2xl me-6 hover:bg-indigo-700 transition-all duration-300 ease-in-out"
@@ -102,6 +113,7 @@ function Navbar() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 className="rounded-full cursor-pointer"
+                ref={profileBtn}
                 onClick={() => setToggleLogout((prev) => !prev)}
               >
                 <path d="M18 20a6 6 0 0 0-12 0" />
@@ -109,7 +121,10 @@ function Navbar() {
                 <circle cx="12" cy="12" r="10" />
               </svg>
               {toggleLogout && (
-                <div className="bg-slate-500 w-24 text-white py-2 rounded-md absolute right-0 my-1 mx-0 flex flex-col items-center justify-center gap-1">
+                <div
+                  ref={menu}
+                  className="bg-slate-500 w-24 text-white py-2 rounded-md absolute right-0 my-1 mx-0 flex flex-col items-center justify-center gap-1"
+                >
                   <button
                     className="py-1 px-2 hover:bg-slate-400 w-full"
                     onClick={logout}

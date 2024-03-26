@@ -35,7 +35,7 @@ function Profile() {
               <path d="M18.4 9.6a2 2 0 1 1 3 3L17 17l-4 1 1-4Z" />
             </svg>
           </div>
-          <div className="grid grid-cols-3 gap-4 mt-4">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
             <div className="">
               <h6 className="text-base text-black">First Name</h6>
               <span className="font-semibold">{user.firstname}</span>

@@ -12,7 +12,6 @@ function Search() {
     if (validation(searchData, setError)) {
       return;
     }
-    console.log(searchData);
     setParams(searchData);
   }
   return (

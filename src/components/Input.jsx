@@ -1,4 +1,4 @@
-function Input({ type, name, placeholder, error, defaultValue }) {
+function Input({ type, name, placeholder, error, defaultValue, id }) {
   return (
     <div>
       <input
@@ -7,6 +7,7 @@ function Input({ type, name, placeholder, error, defaultValue }) {
         name={name}
         placeholder={placeholder}
         defaultValue={defaultValue}
+        id={id}
       />
       <small className="text-red-500 m-0 h-3 ml-1 block">{error}</small>
     </div>

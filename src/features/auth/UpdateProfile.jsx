@@ -4,6 +4,8 @@ import Button from '../../components/Button';
 import Input from '../../components/Input';
 import { useUpdateUserMutation } from '../api/apiSlice';
 import { useUser } from '../../context/context';
+import { toast } from 'react-toastify';
+
 function UpdateProfile({ toggleForm }) {
   const form = useRef();
   const [error, setError] = useState(null);
@@ -17,7 +19,15 @@ function UpdateProfile({ toggleForm }) {
     if (validation(userData, setError)) {
       return;
     } else {
-      //
+      await updateUSer(userData)
+        .unwrap()
+        .then(() => {
+          toast.success('Profile updated successfully');
+          toggleForm(false);
+        })
+        .catch((error) => {
+          setError({ auth: error?.data.message });
+        });
     }
   };
 
@@ -66,36 +76,55 @@ function UpdateProfile({ toggleForm }) {
             >
               <div className="mx-auto max-w-sm flex flex-col gap-4">
                 <div>
+                  <label className="text-sm" htmlFor="firstname">
+                    First Name
+                  </label>
                   <Input
                     type={'text'}
                     name={'firstname'}
                     error={error?.firstname}
+                    id={'firstname'}
                     placeholder={'First Name'}
-                    // defaultValue={user.firstname}
+                    defaultValue={user.firstname}
                   />
                 </div>
                 <div>
+                  <label className="text-sm" htmlFor="lastname">
+                    Last Name
+                  </label>
                   <Input
                     type={'text'}
                     name={'lastname'}
                     error={error?.lastname}
+                    id={'lastname'}
                     placeholder={'Last Name'}
+                    defaultValue={user.lastname}
                   />
                 </div>
                 <div>
+                  <label className="text-sm" htmlFor="username">
+                    User Name
+                  </label>
                   <Input
                     type={'text'}
                     name={'username'}
                     error={error?.username}
+                    id={'username'}
                     placeholder={'User Name'}
+                    defaultValue={user.username}
                   />
                 </div>
                 <div>
+                  <label className="text-sm" htmlFor="email">
+                    Email
+                  </label>
                   <Input
                     type={'text'}
                     name={'email'}
                     error={error?.email}
                     placeholder={'Email'}
+                    defaultValue={user.email}
+                    id={'email'}
                   />
                 </div>
 
