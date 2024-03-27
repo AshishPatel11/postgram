@@ -79,13 +79,13 @@ function Post({ post }) {
           <h1 className="">{title}</h1>
           <div className="my-3 flex items-center justify-center mx-auto ">
             <img
-              src={image}
+              src={image?.imageData}
               className="rounded-lg size-full cursor-pointer"
               alt=""
               onClick={() => setModalOpen(true)}
             />
             {isModalOpen && (
-              <ImageModal src={image} toggleModal={setModalOpen} />
+              <ImageModal src={image?.imageData} toggleModal={setModalOpen} />
             )}
           </div>
           <p className="">{description}</p>
@@ -94,5 +94,4 @@ function Post({ post }) {
     </>
   );
 }
-
 export default Post;

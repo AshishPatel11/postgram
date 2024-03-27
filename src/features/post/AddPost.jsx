@@ -20,7 +20,7 @@ function AddPost({ toggleForm }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(form.current);
-    formData.append('isPrivate', 'false');
+    formData.append('isPrivate', false);
     const postData = Object.fromEntries(formData.entries());
     if (validation(postData, setError)) {
       return;

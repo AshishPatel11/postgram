@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { getCookie } from '../../services/cookies'
-import { readImage } from '../../services/readImage'
+import { io } from 'socket.io-client'
 
 export const apiSlice = createApi({
     reducerPath: 'api',
@@ -9,7 +9,7 @@ export const apiSlice = createApi({
         prepareHeaders: (headers) => {
             const token = getCookie("token")
 
-            // If we have a token set in state, let's assume that we should be passing it.
+            // passing the auth token if found in cookies
             if (token) {
                 headers.set('authorization', `Bearer ${token}`)
             }
@@ -54,24 +54,34 @@ export const apiSlice = createApi({
                 method: "GET",
                 params
             }),
-            providesTags: ['posts']
+            providesTags: ['posts'],
+            async onCacheEntryAdded(args, { updateCachedData, cacheEntryRemoved, cacheDataLoaded }) {
+                const token = getCookie('token')
+                const socket = io('http://localhost:5000', {
+                    extraHeaders: {
+                        token
+                    }
+                })
+                socket.on("connect", (err) => {
+                    console.log(err)
+                });
+
+            }
         }),
         getUserData: builder.query({
             query: userId => ({
                 url: `users/get-users-profile?userId=${userId}`,
                 method: "GET"
             }),
-            providesTags: ['users']
+            providesTags: ['users'],
+
         }),
         getPostImage: builder.query({
             query: postId => ({
                 url: `/posts/get-feed-image?postId=${postId}`,
                 method: "GET",
-                responseHandler: (response) => response.blob()
             }),
-            transformResponse: async (response) => {
-                return await readImage(response);
-            }
+
         }),
         createPost: builder.mutation({
             query: postData => ({
@@ -79,7 +89,7 @@ export const apiSlice = createApi({
                 method: "POST",
                 body: postData,
             }),
-            invalidatesTags: ['posts']
+            // invalidatesTags: ['posts'],
         })
     })
 })
