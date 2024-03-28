@@ -5,15 +5,18 @@ import UpdateProfile from './UpdateProfile';
 function Profile() {
   const { user } = useUser();
   const [toggleForm, setToggleForm] = useState(false);
+
   return (
     <>
       {toggleForm && <UpdateProfile toggleForm={setToggleForm} />}
+
       <div className="container mx-auto mt-20">
         <div className=" bg-white h-14 rounded-xl border-2 border-gray-300 px-6 flex items-start justify-center flex-col">
           <button className="border-b-2 inline-flex items-center font-medium cursor-pointer text-lg text-blue-900 h-full border-blue-700">
             Profile
           </button>
         </div>
+
         <div className="bg-white rounded-xl mt-8 border-2 border-gray-300 px-6 py-4">
           <div className="flex items-center justify-start gap-8">
             <h3 className="font-medium text-xl">Primary Details</h3>

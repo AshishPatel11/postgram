@@ -5,7 +5,9 @@ import { getCookie } from '../../services/cookies';
 
 function AuthLayout() {
   const { user } = useUser();
+
   const token = getCookie('token');
+
   if (token && user) {
     return <Navigate to="/home" replace />;
   } else {

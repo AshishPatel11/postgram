@@ -7,10 +7,12 @@ import NotFound from '../../components/NotFound';
 
 function PostList() {
   const [params, setParams] = useSearchParams();
+
   const page = params.get('page');
   if (page == 1) {
     setParams('');
   }
+
   const query = Object.fromEntries(params.entries());
   const { data: posts, isLoading, isSuccess } = useGetFeedPostsQuery(query);
 

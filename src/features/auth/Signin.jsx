@@ -16,6 +16,7 @@ function Signin() {
     email,
     password,
   });
+
   //hooks declaration
   const [loginUser, { isLoading }] = useLazyLoginUserQuery();
   const { addUser } = useUser();

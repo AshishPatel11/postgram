@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react';
 import { readImage } from '../../services/readImage';
-import validation from '../../services/validation';
 import { useCreatePostMutation } from '../api/apiSlice';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
@@ -11,10 +10,13 @@ import validationSchema from '../../services/validations';
 const { title, description } = validationSchema;
 
 function AddPost({ toggleForm }) {
+  //schema for validation
   const postSchema = yup.object({
     title,
     description,
   });
+
+  //hooks declaration
   const form = useRef();
   const [image, setImage] = useState(null);
   const [createPost, { isLoading }] = useCreatePostMutation();
@@ -23,7 +25,7 @@ function AddPost({ toggleForm }) {
     handleSubmit,
     formState: { errors: error },
   } = useForm({ resolver: yupResolver(postSchema) });
-  console.log(error);
+
   //for displaying current image
   const fileChange = async (e) => {
     const imageString = await readImage(e.target.files[0]);
@@ -31,7 +33,7 @@ function AddPost({ toggleForm }) {
   };
 
   //form submit handler
-  const onSubmit = async (postData) => {
+  const onSubmit = async () => {
     const formData = new FormData(form.current);
     formData.append('isPrivate', false);
     await createPost(formData);

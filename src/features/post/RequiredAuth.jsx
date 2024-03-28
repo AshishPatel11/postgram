@@ -4,6 +4,7 @@ import { getCookie } from '../../services/cookies';
 
 function RequiredAuth() {
   const { user } = useUser();
+
   const token = getCookie('token');
   return token && user ? <Outlet /> : <Navigate to="/" replace />;
 }

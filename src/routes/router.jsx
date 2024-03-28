@@ -29,6 +29,7 @@ const router = createBrowserRouter(
         </Route>
       </Route>
 
+      {/* Page not found */}
       <Route path="/*" element={<NotFound />} />
     </>
   )

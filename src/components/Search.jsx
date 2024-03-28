@@ -5,6 +5,7 @@ import { useSearchParams } from 'react-router-dom';
 function Search() {
   const [error, setError] = useState(null);
   const [, setParams] = useSearchParams();
+
   function handleSearch(e) {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -14,6 +15,7 @@ function Search() {
     }
     setParams(searchData);
   }
+  
   return (
     <>
       <div className="container mx-auto">

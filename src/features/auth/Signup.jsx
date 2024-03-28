@@ -11,6 +11,7 @@ const { firstname, lastname, email, username, password, confirmPassword } =
   validationSchema;
 
 function Signup() {
+  //schema for validation
   const signupSchema = yup.object({
     firstname,
     lastname,
@@ -20,9 +21,9 @@ function Signup() {
     confirmPassword,
   });
 
+  //hooks declaration
   const [addUser, { isLoading }] = useAddUserMutation();
   const navigate = useNavigate();
-
   const {
     register,
     handleSubmit,
@@ -30,11 +31,8 @@ function Signup() {
     formState: { errors: error },
   } = useForm({ resolver: yupResolver(signupSchema) });
 
-  console.log(error);
   //form submit event handler
   const onSubmit = async (userData) => {
-    console.log(userData);
-
     //API call through RTK query
     await addUser({ ...userData, isPrivate: true })
       .unwrap()

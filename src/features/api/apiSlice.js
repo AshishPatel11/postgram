@@ -4,7 +4,6 @@ import { io } from 'socket.io-client'
 
 export const apiSlice = createApi({
     reducerPath: 'api',
-    keepUnusedDataFor: 5,
     baseQuery: fetchBaseQuery({
         baseUrl: import.meta.env.VITE_REACT_BASE_URL,
         prepareHeaders: (headers) => {
@@ -20,6 +19,7 @@ export const apiSlice = createApi({
     }),
     tagTypes: ['users', 'posts'],
     endpoints: builder => ({
+        //add new user endpoint
         addUser: builder.mutation({
             query: (user) => ({
                 url: "/sign-up",
@@ -27,6 +27,7 @@ export const apiSlice = createApi({
                 body: user,
             })
         }),
+        //login user endpoint
         loginUser: builder.query({
             query: (user) => ({
                 url: "/login",
@@ -34,6 +35,7 @@ export const apiSlice = createApi({
                 body: user,
             })
         }),
+        //get user by token endpoint
         getUser: builder.query({
             query: () => ({
                 url: "/users/get-user",
@@ -41,6 +43,7 @@ export const apiSlice = createApi({
             }),
             providesTags: ['users']
         }),
+        //update current user endpoint
         updateUser: builder.mutation({
             query: user => ({
                 url: "/users/update-user",
@@ -49,6 +52,7 @@ export const apiSlice = createApi({
             }),
             invalidatesTags: ['users']
         }),
+        //get all posts endpoint
         getFeedPosts: builder.query({
             query: params => ({
                 url: `/posts/get-feed-posts?`,
@@ -56,6 +60,7 @@ export const apiSlice = createApi({
                 params
             }),
             providesTags: ['posts'],
+            //socket connection for getting live post data
             async onCacheEntryAdded(args, { updateCachedData, cacheEntryRemoved, cacheDataLoaded }) {
                 const token = getCookie('token')
                 const socket = io('http://localhost:5000', {
@@ -78,6 +83,7 @@ export const apiSlice = createApi({
                 socket.close()
             }
         }),
+        //Endpoint userData based on id provided in search params
         getUserData: builder.query({
             query: userId => ({
                 url: `users/get-users-profile?userId=${userId}`,
@@ -86,6 +92,7 @@ export const apiSlice = createApi({
             providesTags: ['users'],
 
         }),
+        //Endpoint for getting the images of post
         getPostImage: builder.query({
             query: postId => ({
                 url: `/posts/get-feed-image?postId=${postId}`,
@@ -93,6 +100,7 @@ export const apiSlice = createApi({
             }),
 
         }),
+        //Endpoint for creating new post
         createPost: builder.mutation({
             query: postData => ({
                 url: "/posts/create-post",

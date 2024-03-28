@@ -18,7 +18,7 @@ function UpdateProfile({ toggleForm }) {
     email,
   });
 
-  //hooks
+  //hooks declaration
   const [updateUSer, { isLoading }] = useUpdateUserMutation();
   const { user } = useUser();
   const {

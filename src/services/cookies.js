@@ -19,6 +19,7 @@ export function getCookie(cookieName) {
     }
     return null;
 }
+
 export function deleteCookies(name) {
     document.cookie = name + "="
     return
