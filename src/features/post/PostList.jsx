@@ -8,7 +8,6 @@ import NotFound from '../../components/NotFound';
 function PostList() {
   const [params, setParams] = useSearchParams();
   const page = params.get('page');
-  console.log(params.get('search'));
   if (page == 1) {
     setParams('');
   }

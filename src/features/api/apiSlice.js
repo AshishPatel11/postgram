@@ -4,6 +4,7 @@ import { io } from 'socket.io-client'
 
 export const apiSlice = createApi({
     reducerPath: 'api',
+    keepUnusedDataFor: 5,
     baseQuery: fetchBaseQuery({
         baseUrl: import.meta.env.VITE_REACT_BASE_URL,
         prepareHeaders: (headers) => {
@@ -62,10 +63,19 @@ export const apiSlice = createApi({
                         token
                     }
                 })
-                socket.on("connect", (err) => {
-                    console.log(err)
-                });
-
+                try {
+                    await cacheDataLoaded;
+                    const newPostListner = (event) => {
+                        updateCachedData((draft) => {
+                            draft.data.data.unshift(event) // inserting data in the array at the beggining
+                        })
+                    }
+                    socket.on('new-post', newPostListner)
+                } catch (error) {
+                    console.error(error)
+                }
+                await cacheEntryRemoved;
+                socket.close()
             }
         }),
         getUserData: builder.query({

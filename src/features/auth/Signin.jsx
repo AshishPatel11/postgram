@@ -1,29 +1,33 @@
-import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLazyLoginUserQuery } from '../api/apiSlice';
 import { toast } from 'react-toastify';
 import { useUser } from '../../context/context';
-import validation from '../../services/validation';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import validationSchema from '../../services/validations';
+const { email, password } = validationSchema;
+
 function Signin() {
-  const form = useRef();
-  const [error, setError] = useState({});
+  //schema for validation
+  const signinSchema = yup.object({
+    email,
+    password,
+  });
+  //hooks declaration
   const [loginUser, { isLoading }] = useLazyLoginUserQuery();
   const { addUser } = useUser();
+  const {
+    register,
+    setError,
+    handleSubmit,
+    formState: { errors: error },
+  } = useForm({ resolver: yupResolver(signinSchema) });
 
   //submit event handler
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    //getting formData
-    const formData = new FormData(form.current);
-    const authData = Object.fromEntries(formData.entries());
-
-    //validating data
-    if (validation(authData, setError)) {
-      return;
-    }
+  const onSubmit = async (authData) => {
     //API call through RTK query
     await loginUser(authData)
       .unwrap()
@@ -32,7 +36,7 @@ function Signin() {
         addUser(result.data);
       })
       .catch((error) => {
-        setError({ auth: error?.data.message });
+        setError('root', { message: error?.data.message });
       });
   };
 
@@ -46,18 +50,15 @@ function Signin() {
             </h1>
           </div>
           <div className="w-full flex-1 mt-8">
-            <form
-              ref={form}
-              onSubmit={handleSubmit}
-              onChange={() => setError(null)}
-            >
-              <div className="mx-auto max-w-xs flex flex-col gap-4">
-                <div>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="mx-auto max-w-sm flex flex-col gap-1 w-96">
+                <div className="">
                   <Input
                     type="text"
                     placeholder="Email"
                     error={error?.email}
                     name="email"
+                    register={register}
                   />
                 </div>
 
@@ -67,11 +68,12 @@ function Signin() {
                     name={'password'}
                     placeholder={'Password'}
                     error={error?.password}
+                    register={register}
                   />
                 </div>
 
                 <p className="text-center mt-3 text-sm text-red-500 h-1">
-                  {error?.auth ? error.auth : ''}
+                  {error?.root?.message}
                 </p>
 
                 <Button type="submit" isLoading={isLoading}>

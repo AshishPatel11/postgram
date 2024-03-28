@@ -4,12 +4,26 @@ import validation from '../../services/validation';
 import { useCreatePostMutation } from '../api/apiSlice';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import validationSchema from '../../services/validations';
+const { title, description } = validationSchema;
+
 function AddPost({ toggleForm }) {
+  const postSchema = yup.object({
+    title,
+    description,
+  });
   const form = useRef();
-  const [error, setError] = useState(null);
   const [image, setImage] = useState(null);
   const [createPost, { isLoading }] = useCreatePostMutation();
-
+  const {
+    register,
+    handleSubmit,
+    formState: { errors: error },
+  } = useForm({ resolver: yupResolver(postSchema) });
+  console.log(error);
   //for displaying current image
   const fileChange = async (e) => {
     const imageString = await readImage(e.target.files[0]);
@@ -17,17 +31,11 @@ function AddPost({ toggleForm }) {
   };
 
   //form submit handler
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (postData) => {
     const formData = new FormData(form.current);
     formData.append('isPrivate', false);
-    const postData = Object.fromEntries(formData.entries());
-    if (validation(postData, setError)) {
-      return;
-    } else {
-      await createPost(formData);
-      toggleForm(false);
-    }
+    await createPost(formData);
+    toggleForm(false);
   };
 
   //for hiding the form
@@ -68,11 +76,7 @@ function AddPost({ toggleForm }) {
           </div>
           {/* Add post form ==> */}
           <div className="w-full flex-1 p-14">
-            <form
-              ref={form}
-              onSubmit={handleSubmit}
-              onChange={() => setError(null)}
-            >
+            <form ref={form} onSubmit={handleSubmit(onSubmit)}>
               <div className="mx-auto max-w-sm flex flex-col gap-4">
                 <div>
                   <div className="flex items-center justify-center w-full">
@@ -149,10 +153,12 @@ function AddPost({ toggleForm }) {
                       className="hidden"
                       name="image"
                       onChange={fileChange}
+                      accept="image/*"
+                      {...register('image', { required: 'Image is required' })}
                     />
                   </div>
                   <small className="text-red-500 m-0 h-3 ml-1 block">
-                    {error?.image}
+                    {error?.image?.message}
                   </small>
                 </div>
 
@@ -162,6 +168,7 @@ function AddPost({ toggleForm }) {
                     name={'title'}
                     error={error?.title}
                     placeholder={'Title'}
+                    register={register}
                   />
                 </div>
                 <div>
@@ -171,6 +178,7 @@ function AddPost({ toggleForm }) {
                     name="description"
                     placeholder="Description"
                     rows={6}
+                    {...register('description')}
                   ></textarea>
                   <small className="text-red-500 m-0 h-3 ml-1 block">
                     {error?.description}
@@ -178,7 +186,7 @@ function AddPost({ toggleForm }) {
                 </div>
 
                 <p className="text-center mt-2 text-sm text-red-500 h-1">
-                  {error?.auth ? error.auth : ''}
+                  {error?.root?.message}
                 </p>
 
                 <Button type={'submit'} isLoading={isLoading}>

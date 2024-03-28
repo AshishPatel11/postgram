@@ -1,34 +1,44 @@
-import { useRef, useState } from 'react';
-import validation from '../../services/validation';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 import { useUpdateUserMutation } from '../api/apiSlice';
 import { useUser } from '../../context/context';
 import { toast } from 'react-toastify';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import validationSchema from '../../services/validations';
+const { firstname, lastname, email, username } = validationSchema;
 
 function UpdateProfile({ toggleForm }) {
-  const form = useRef();
-  const [error, setError] = useState(null);
+  //user schema for validation
+  const userSchema = yup.object({
+    firstname,
+    lastname,
+    username,
+    email,
+  });
+
+  //hooks
   const [updateUSer, { isLoading }] = useUpdateUserMutation();
   const { user } = useUser();
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors: error },
+  } = useForm({ resolver: yupResolver(userSchema), defaultValues: user });
+
   //form submit handler
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const formData = new FormData(form.current);
-    const userData = Object.fromEntries(formData.entries());
-    if (validation(userData, setError)) {
-      return;
-    } else {
-      await updateUSer(userData)
-        .unwrap()
-        .then(() => {
-          toast.success('Profile updated successfully');
-          toggleForm(false);
-        })
-        .catch((error) => {
-          setError({ auth: error?.data.message });
-        });
-    }
+  const onSubmit = async (userData) => {
+    await updateUSer(userData)
+      .unwrap()
+      .then(() => {
+        toast.success('Profile updated successfully');
+        toggleForm(false);
+      })
+      .catch((error) => {
+        setError('root', { message: error?.data.message });
+      });
   };
 
   //for hiding the form
@@ -69,11 +79,7 @@ function UpdateProfile({ toggleForm }) {
           </div>
           {/* Add post form ==> */}
           <div className="w-full flex-1 p-14">
-            <form
-              ref={form}
-              onSubmit={handleSubmit}
-              onChange={() => setError(null)}
-            >
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div className="mx-auto max-w-sm flex flex-col gap-4">
                 <div>
                   <label className="text-sm" htmlFor="firstname">
@@ -85,7 +91,7 @@ function UpdateProfile({ toggleForm }) {
                     error={error?.firstname}
                     id={'firstname'}
                     placeholder={'First Name'}
-                    defaultValue={user.firstname}
+                    register={register}
                   />
                 </div>
                 <div>
@@ -98,7 +104,7 @@ function UpdateProfile({ toggleForm }) {
                     error={error?.lastname}
                     id={'lastname'}
                     placeholder={'Last Name'}
-                    defaultValue={user.lastname}
+                    register={register}
                   />
                 </div>
                 <div>
@@ -111,7 +117,7 @@ function UpdateProfile({ toggleForm }) {
                     error={error?.username}
                     id={'username'}
                     placeholder={'User Name'}
-                    defaultValue={user.username}
+                    register={register}
                   />
                 </div>
                 <div>
@@ -123,13 +129,13 @@ function UpdateProfile({ toggleForm }) {
                     name={'email'}
                     error={error?.email}
                     placeholder={'Email'}
-                    defaultValue={user.email}
                     id={'email'}
+                    register={register}
                   />
                 </div>
 
                 <p className="text-center mt-2 text-sm text-red-500 h-1">
-                  {error?.auth ? error.auth : ''}
+                  {error?.root?.message}
                 </p>
 
                 <Button type={'submit'} isLoading={isLoading}>

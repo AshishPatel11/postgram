@@ -1,4 +1,4 @@
-function Input({ type, name, placeholder, error, defaultValue, id }) {
+function Input({ type, name, placeholder, error, defaultValue, id, register }) {
   return (
     <div>
       <input
@@ -8,8 +8,11 @@ function Input({ type, name, placeholder, error, defaultValue, id }) {
         placeholder={placeholder}
         defaultValue={defaultValue}
         id={id}
+        {...register(name)}
       />
-      <small className="text-red-500 m-0 h-3 ml-1 block">{error}</small>
+      <small className="text-red-500 m-0 h-3 ml-1 inline-block">
+        {error?.message}
+      </small>
     </div>
   );
 }

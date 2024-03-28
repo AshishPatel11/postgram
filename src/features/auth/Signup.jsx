@@ -1,46 +1,50 @@
-import { useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAddUserMutation } from '../api/apiSlice';
 import { toast } from 'react-toastify';
-import validation from '../../services/validation';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import validationSchema from '../../services/validations';
+const { firstname, lastname, email, username, password, confirmPassword } =
+  validationSchema;
 
 function Signup() {
-  const form = useRef();
-  const [error, setError] = useState(null);
+  const signupSchema = yup.object({
+    firstname,
+    lastname,
+    email,
+    username,
+    password,
+    confirmPassword,
+  });
+
   const [addUser, { isLoading }] = useAddUserMutation();
   const navigate = useNavigate();
 
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors: error },
+  } = useForm({ resolver: yupResolver(signupSchema) });
+
+  console.log(error);
   //form submit event handler
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (userData) => {
+    console.log(userData);
 
-    //getting formData
-    const formData = new FormData(form.current);
-    const userData = Object.fromEntries(formData.entries());
-
-    //validating data
-    if (validation(userData, setError)) {
-      return;
-    }
-
-    if (userData.password !== userData.confirmPassword) {
-      //password matching
-      setError({ match: 'Password does not match!' });
-      return;
-    } else {
-      //API call through RTK query
-      await addUser({ ...userData, isPrivate: true })
-        .unwrap()
-        .then((payload) => {
-          toast.success(payload.message);
-          navigate('/');
-        })
-        .catch((error) => {
-          setError({ auth: error?.data.message });
-        });
-    }
+    //API call through RTK query
+    await addUser({ ...userData, isPrivate: true })
+      .unwrap()
+      .then((payload) => {
+        toast.success(payload.message);
+        navigate('/');
+      })
+      .catch((error) => {
+        setError('root', { message: error?.data.message });
+      });
   };
 
   return (
@@ -54,19 +58,16 @@ function Signup() {
           </div>
 
           <div className="w-full flex-1 mt-8">
-            <form
-              onSubmit={handleSubmit}
-              ref={form}
-              onChange={() => setError(null)}
-            >
-              <div className="mx-auto max-w-xs flex flex-col gap-4">
-                <div className="flex gap-3">
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="mx-auto max-w-sm flex flex-col gap-1">
+                <div className="flex gap-2">
                   <div>
                     <Input
                       type={'text'}
                       error={error?.firstname}
                       name={'firstname'}
                       placeholder={'First name'}
+                      register={register}
                     />
                   </div>
                   <div>
@@ -75,6 +76,7 @@ function Signup() {
                       error={error?.lastname}
                       name={'lastname'}
                       placeholder={'Last name'}
+                      register={register}
                     />
                   </div>
                 </div>
@@ -84,6 +86,7 @@ function Signup() {
                     error={error?.username}
                     name={'username'}
                     placeholder={'Username'}
+                    register={register}
                   />
                 </div>
                 <div>
@@ -92,6 +95,7 @@ function Signup() {
                     error={error?.email}
                     name={'email'}
                     placeholder={'Email'}
+                    register={register}
                   />
                 </div>
                 <div>
@@ -100,20 +104,22 @@ function Signup() {
                     error={error?.password}
                     name={'password'}
                     placeholder={'Password'}
+                    register={register}
                   />
                 </div>
 
                 <div>
                   <Input
                     type={'password'}
-                    error={error?.confirmPassword || error?.match}
+                    error={error?.confirmPassword}
                     name={'confirmPassword'}
                     placeholder={'Confirm Password'}
+                    register={register}
                   />
                 </div>
 
                 <p className="text-center mt-3 text-sm text-red-500 h-1">
-                  {error?.auth ? error.auth : ''}
+                  {error?.root?.message}
                 </p>
 
                 <Button type={'submit'} isLoading={isLoading}>
